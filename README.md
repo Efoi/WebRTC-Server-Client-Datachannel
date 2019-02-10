@@ -126,3 +126,8 @@ async function onOpen(ws) {
 
 main();
 ```
+
+# Limitations
+The RTCPeerConnection is not available in all browsers. RTCDataChannel even less! It is not supported in firefox. 
+If you want compatability, or use this functionality outside of chromium browsers, I would suggest packing the client into electron.
+If browser != chrome ? () => {"redirect to bundled electron download page"} :)
