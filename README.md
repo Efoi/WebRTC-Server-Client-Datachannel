@@ -3,12 +3,11 @@ This library is a first attempt at making the RTCDataChannel a bit easier to imp
 
 # Usage
 ```bash
-git clone https://github.com/Efoi/WebRTC-Server-Client-Datachannel.git  
-cp -r WebRTC-Server-Client-Datachannel/src/rtcpc <Your own project path>
+npm i webrtc-server-client-datachannel --save
 ```
 Here is a server sided example, using express.
 ```javascript
-const { RtcpcServer } = require("./rtcpc/RTCServer");
+const { RTCServer } = require("webrtc-server-client-datachannel");
 const { createServer } = require('http');
 const { Server } = require('ws');
 const express = require('express');
@@ -57,7 +56,7 @@ server.listen(8080, () => {
 
 new Server({ server }).on('connection', async ws => {
 
-  pc = new RtcpcServer(ws, pcConf, [dataChannelTCPLike, dataChannelUDPLike]);
+  pc = new RTCServer(ws, pcConf, [dataChannelTCPLike, dataChannelUDPLike]);
   await pc.create();
 
   pc.tcp.onmessage = (event) => {
@@ -71,7 +70,7 @@ new Server({ server }).on('connection', async ws => {
 
 Your client can then have code like this to accept and send some strings to the RTCDatachannels:
 ```javascript
-import { RtcpcClient } from "./rtcpc/RTCClient";
+import { RTCClient } from "webrtc-server-client-datachannel";
 
 /**
  * @type {RtcpcClient}
@@ -99,11 +98,11 @@ async function main() {
     const ws = new WebSocket('ws://' + "localhost" + ':8080');
     await onOpen(ws);
 
-    pc = new RtcpcClient(ws, pcConf,[dataChannelTCPLike, dataChannelUDPLike]);
+    pc = new RTCClient(ws, pcConf,[dataChannelTCPLike, dataChannelUDPLike]);
     await pc.create();
 
-    pc.tcp.send("AllreadyFromTCP");
-    pc.udp.send("AllreadyFromUDP");
+    pc.tcp.send("AllReadyFromTCP");
+    pc.udp.send("AllReadyFromUDP");
 
     pc.tcp.onmessage = (event)=>{
       console.log("got 'tcp'.", event.data);
