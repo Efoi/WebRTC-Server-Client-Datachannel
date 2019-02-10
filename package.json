@@ -2,10 +2,7 @@
   "name": "webrtc-server-client-datachannel",
   "version": "0.0.1",
   "description": "A class that handles RTCDataChannels from cradle to grave",
-  "main": "client.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Efoi/WebRTC-Server-Client-Datachannel.git"
@@ -21,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/Efoi/WebRTC-Server-Client-Datachannel/issues"
   },
-  "homepage": "https://github.com/Efoi/WebRTC-Server-Client-Datachannel#readme"
+  "homepage": "https://github.com/Efoi/WebRTC-Server-Client-Datachannel#readme",
+  "dependencies": {
+    "wrtc": "^0.3.5"
+  }
 }
