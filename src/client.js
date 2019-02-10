@@ -1,10 +1,5 @@
-import { game } from "./client/phaser/game";
 import { RtcpcClient } from "./rtcpc/RTCClient";
-import { onOpen } from "./server/socket";
 
-
-
-//const g = game(); // Do after login. Before on testing.
 /**
  * @type {RtcpcClient}
  */
