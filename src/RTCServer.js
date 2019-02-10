@@ -23,7 +23,7 @@ async function ServerCreateOffer(pc, ws) {
 /**
  * Creates Server Side RTCPeerConnection.
  */
-class RtcpcServer extends Rtcpc {
+module.exports.RTCServer = class RtcpcServer extends Rtcpc {
     /**
      * Constructor. Adds Datachannels.
      * @param {WebSocket} ws 
@@ -76,5 +76,3 @@ class RtcpcServer extends Rtcpc {
         await Promise.all(this.openPromises);
     }
 }
-
-module.exports.RTCserver = RtcpcServer;

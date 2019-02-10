@@ -10,7 +10,7 @@ const {
  * Creates a new RTCPeerConnection, negotiates tcp and udp channels.
  * make = new Rtcpc(ws); await make.create();"
  */
-class Rtcpc {
+module.exports.Rtcpc = class Rtcpc {
   /**
    * Creates a new instance and initializes the RTCPeerConnection.
    * @param {WebSocket} ws 
@@ -74,17 +74,17 @@ function getMessage(ws, type) {
   });
 }
 
-async function getOffer(ws) {
+module.exports.getOffer = async function getOffer(ws) {
   const offer = await getMessage(ws, 'offer');
   return new RTCSessionDescription(offer);
 }
 
-async function getAnswer(ws) {
+module.exports.getAnswer = async function getAnswer(ws) {
   const answer = await getMessage(ws, 'answer');
   return new RTCSessionDescription(answer);
 }
 
-function onCandidate(ws, callback) {
+module.exports.onCandidate = function onCandidate(ws, callback) {
   ws.addEventListener('message', ({ data }) => {
     try {
       const message = JSON.parse(data);
@@ -98,8 +98,3 @@ function onCandidate(ws, callback) {
     }
   });
 }
-
-module.exports.getOffer = getOffer;
-module.exports.getAnswer = getAnswer;
-module.exports.onCandidate = onCandidate;
-module.exports.Rtcpc = Rtcpc;

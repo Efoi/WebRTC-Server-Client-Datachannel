@@ -19,7 +19,7 @@ async function ClientRecieveOffer(pc, ws) {
 /**
  * Creates the client side.
  */
-class RtcpcClient extends Rtcpc {
+module.exports.RTCClient = class RtcpcClient extends Rtcpc {
     /**
      * Creates the client side.
      * @param {WebSocket} ws 
@@ -74,4 +74,3 @@ class RtcpcClient extends Rtcpc {
         console.log("Datachannels opened");
     }
 }
-module.exports.RTCclient = RtcpcClient;
