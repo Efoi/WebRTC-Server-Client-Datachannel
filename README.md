@@ -1,11 +1,13 @@
 # WebRTC-Server-Client-Datachannel
 This library is a first attempt at making the RTCDataChannel a bit easier to implement in a server-client communication model.  
 
-# Usage
+# Get Started
 ```bash
 npm i webrtc-server-client-datachannel --save
 ```
-Here is a server sided example, using express.
+
+# Example
+Server side with express
 ```javascript
 const { RTCServer } = require("webrtc-server-client-datachannel");
 const { createServer } = require('http');
@@ -16,19 +18,14 @@ const app = express();
 const server = createServer(app);
 
 /**
- * @type {RtcpcServer}
- */
-let pc = {};
-
-/**
  * @type {RTCConfiguration}
  */
 const pcConf = { required: {
-    "video": false,
-    "audio": false
+    video: false,
+    audio: false
   },
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-  "optional": [{ DtlsSrtpKeyAgreement: true }]
+  optional: [{ DtlsSrtpKeyAgreement: true }]
 }; 
 
 const dataChannelTCPLike = {
@@ -56,7 +53,7 @@ server.listen(8080, () => {
 
 new Server({ server }).on('connection', async ws => {
 
-  pc = new RTCServer(ws, pcConf, [dataChannelTCPLike, dataChannelUDPLike]);
+  let pc = new RTCServer(ws, pcConf, [dataChannelTCPLike, dataChannelUDPLike]);
   await pc.create();
 
   pc.tcp.onmessage = (event) => {
@@ -73,20 +70,15 @@ Your client can then have code like this to accept and send some strings to the 
 import { RTCClient } from "webrtc-server-client-datachannel";
 
 /**
- * @type {RtcpcClient}
- */
-let pc = {};
-
-/**
  * @type {RTCConfiguration}
  */
 const pcConf = { 
   required: {
-    "video": false,
-    "audio": false
+    video: false,
+    audio: false
   },
   iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-  "optional": [{ DtlsSrtpKeyAgreement: true }]
+  optional: [{ DtlsSrtpKeyAgreement: true }]
 }; 
 
 const dataChannelTCPLike = {label: "tcp"};
@@ -98,7 +90,7 @@ async function main() {
     const ws = new WebSocket('ws://' + "localhost" + ':8080');
     await onOpen(ws);
 
-    pc = new RTCClient(ws, pcConf,[dataChannelTCPLike, dataChannelUDPLike]);
+    let pc = new RTCClient(ws, pcConf,[dataChannelTCPLike, dataChannelUDPLike]);
     await pc.create();
 
     pc.tcp.send("AllReadyFromTCP");
@@ -134,4 +126,3 @@ async function onOpen(ws) {
 
 main();
 ```
-
