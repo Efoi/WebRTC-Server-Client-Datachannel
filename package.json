@@ -1,0 +1,25 @@
+{
+  "name": "webrtc-server-client-datachannel",
+  "version": "0.0.1",
+  "description": "A class that handles RTCDataChannels from cradle to grave",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Efoi/WebRTC-Server-Client-Datachannel.git"
+  },
+  "keywords": [
+    "WebRTC",
+    "RTCDataChannel",
+    "UDP",
+    "SCTP"
+  ],
+  "author": "Einar Furuholmen (einarfuruholmen@gmail.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Efoi/WebRTC-Server-Client-Datachannel/issues"
+  },
+  "homepage": "https://github.com/Efoi/WebRTC-Server-Client-Datachannel#readme"
+}
