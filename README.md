@@ -128,6 +128,8 @@ main();
 ```
 
 # Limitations
-The RTCPeerConnection is not available in all browsers. RTCDataChannel even less! It is not supported in firefox. 
-If you want compatability, or use this functionality outside of chromium browsers, I would suggest packing the client into electron.
-If browser != chrome ? () => {"redirect to bundled electron download page"} :)
+The RTCPeerConnection is not available in all browsers. RTCDataChannel even less! It is not supported in firefox.  
+If you want compatability, or use this functionality outside of chromium browsers, I would suggest packing the client into electron.  
+If (browser != chrome) {"redirect to bundled electron download page"}  
+  
+It is also wise to add handlers for websocket close, and RTCServer.pc.onclose, RTCClient.pc.onclose.

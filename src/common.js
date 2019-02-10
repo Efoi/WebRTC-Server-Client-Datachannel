@@ -17,18 +17,10 @@ module.exports.Rtcpc = class Rtcpc {
    */
   constructor(ws, config) {
       this.isReady = false;
-      this.pc = new RTCPeerConnection({
-          required: {
-              "video": false,
-              "audio": false
-          },
-          iceServers: [
-              {
-                  urls: 'stun:stun.l.google.com:19302'
-              }
-          ],
-          "optional": [{ DtlsSrtpKeyAgreement: true }]
-      });
+      /**
+       * @type {RTCPeerConnection}
+       */
+      this.pc = new RTCPeerConnection(config);
       this.ws = ws;
       this.queuedCandidates = [];
       this.pc.onicecandidate = ({ candidate }) => {
