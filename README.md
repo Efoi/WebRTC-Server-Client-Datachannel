@@ -123,5 +123,12 @@ main();
 # Limitations
 The RTCPeerConnection is not working the same way in all browsers, and alot of it is experimental technology!   
 Please reply with compatability issues if you find some.  
+Tested with Chromium, Electron and Firefox.
   
-It is important that the RTCConfiguration is equal, so normally split it into a seperate file and import the same configuration to both client and server. This is due to making the datachannels negotiated beforehand. It seems this was needed for firefox to not destroy the objects after creation.
+It is important that the RTCConfiguration is equal, so normally split it into a seperate file and import the same configuration to both client and server. This is due to making the datachannels negotiated beforehand. It seems this was needed for firefox to not destroy the objects after creation.  
+
+# Known bugs
+Electron reports an error message in console (not web console, but from electron launch). This is a non issue, described here:  
+https://bugs.chromium.org/p/webrtc/issues/detail?id=7381&desc=3  
+  
+
