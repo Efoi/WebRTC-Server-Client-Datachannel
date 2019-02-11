@@ -14,26 +14,42 @@ module.exports.Rtcpc = class Rtcpc {
   /**
    * Creates a new instance and initializes the RTCPeerConnection.
    * @param {WebSocket} ws 
+   * @param {RTCConfiguration} config
    */
-  constructor(ws, config) {
-      this.isReady = false;
-      /**
-       * @type {RTCPeerConnection}
-       */
-      this.pc = new RTCPeerConnection(config);
-      this.ws = ws;
-      this.queuedCandidates = [];
-      this.pc.onicecandidate = ({ candidate }) => {
-          if (candidate) {
-            ws.send(JSON.stringify({
-              type: 'candidate',
-              candidate
-            }));
-          }
-      };
+  constructor(ws, config, datachannels) {
+    this.isReady = false;
+    /**
+     * @type {RTCPeerConnection}
+     */
+    this.pc = new RTCPeerConnection(config);
+    this.ws = ws;
+    this.queuedCandidates = [];
+    this.datachannels = datachannels;
+    this.openPromises = [];
+    let id=0;
+    this.datachannels.forEach(element => {
+      id++;
+      element.config.id=id;
+      element.config.negotiated=true;
+      element.onOpenResolve = () => { };
+      element.onOpenReject = () => { };
+      element.onOpenPromise = new Promise((resolve, reject) => {
+        element.onOpenResolve = resolve;
+        element.onOpenReject = reject;
+      });
+      this.openPromises.push(element.onOpenPromise);
+      this[element.label] = this.pc.createDataChannel(element.label, element.config);
+      this[element.label].onopen = element.onOpenResolve;
+    });
+    this.pc.onicecandidate = ({ candidate }) => {
+      if (candidate) {
+        ws.send(JSON.stringify({
+          type: 'candidate',
+          candidate
+        }));
+      }
+    };
   }
-
-
 }
 
 function getMessage(ws, type) {

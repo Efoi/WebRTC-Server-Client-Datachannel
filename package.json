@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Efoi/WebRTC-Server-Client-Datachannel#readme",
   "dependencies": {
+    "webrtc-adapter": "^7.2.0",
     "wrtc": "^0.3.5"
   }
 }

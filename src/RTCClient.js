@@ -27,27 +27,7 @@ module.exports.RTCClient = class RtcpcClient extends Rtcpc {
      * @param {[config]} datachannels
      */
     constructor(ws, config, datachannels) {
-        console.log("creating rtcpc");
-        super(ws, config);
-        this.datachannels = datachannels;
-        this.openDcPromises = [];
-        this.datachannels.forEach(element => {
-            element.openResolve = ()=>{};
-            element.openReject = ()=>{};
-            element.openPromise = new Promise((resolve, reject)=>{
-                element.openResolve = resolve;
-                element.openReject = reject;
-            });
-            this.openDcPromises.push(element.openPromise);
-        });
-        this.pc.ondatachannel = (ev)=>{
-            this.datachannels.forEach(element => {
-                if (element.label==ev.channel.label){
-                    element.openResolve();
-                    this[element.label]=ev.channel;
-                }
-            });
-        };
+        super(ws, config, datachannels);
     }
 
     /**
@@ -63,14 +43,12 @@ module.exports.RTCClient = class RtcpcClient extends Rtcpc {
             await this.pc.addIceCandidate(candidate);
         }
         );
-        console.log("initiating handshake");
         await ClientRecieveOffer(this.pc, this.ws);
         await Promise.all(this.queuedCandidates.splice(0).map(async candidate => {
             console.log("resolving candidates");
-            await pc.addIceCandidate(candidate);
+            await this.pc.addIceCandidate(candidate);
         }));
-        console.log("waiting for datachannels");
-        await Promise.all(this.openDcPromises);
+        await Promise.all(this.openPromises);
         console.log("Datachannels opened");
     }
 }

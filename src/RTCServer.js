@@ -29,30 +29,9 @@ module.exports.RTCServer = class RtcpcServer extends Rtcpc {
      * @param {WebSocket} ws 
      * @param {RTCConfiguration} config
      * @param {[{"label":String, config: { ordered: Boolean, maxRetransmits: Uint32Array, binaryType: "blob || arraybuffer"}}]} datachannels
-     * 
-     * @example
-     * let aTextDatachannel = {label:"TextReliable",config:{ordered:true,maxRetransmits:10,binaryType:"blob"}};
-     * let aPositionDataChannel = {label:"PosUnreliable",config:{ordered:false, maxRetransmits:0, binaryType:"arraybuffer"}};
-     * let aConnection = new RtcpcServer(aWebsocket, [aTextDatachannel, aPositionDataChannel]);
-     * await aConnection.create();
-     * aConnection.TextReliable.send("Hi, channels are open!");
-     * aConnection.PosUnreliable.send(arraybufferPosUpdate);
      */
     constructor(ws, config, datachannels) {
-        super(ws, config);
-        this.datachannels=datachannels;
-        this.openPromises=[];
-        this.datachannels.forEach(element => {
-            element.onOpenResolve=()=>{};
-            element.onOpenReject=()=>{};
-            element.onOpenPromise=new Promise((resolve,reject)=>{
-                element.onOpenResolve = resolve;
-                element.onOpenReject = reject;
-            });
-            this.openPromises.push(element.onOpenPromise);
-            this[element.label]=this.pc.createDataChannel(element.label, element.config);
-            this[element.label].onopen = element.onOpenResolve;
-        });
+        super(ws, config, datachannels);
     }
     /**
      * Handles handshaking and awaits all the datachannels to open.
@@ -71,7 +50,7 @@ module.exports.RTCServer = class RtcpcServer extends Rtcpc {
         await ServerCreateOffer(this.pc, this.ws);
         await Promise.all(this.queuedCandidates.splice(0).map(async candidate => {
             console.log("resolving candidates");
-            await pc.addIceCandidate(candidate);
+            await this.pc.addIceCandidate(candidate);
         }));
         await Promise.all(this.openPromises);
     }

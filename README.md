@@ -7,44 +7,50 @@ npm i webrtc-server-client-datachannel --save
 ```
 
 # Example
+A config file that is loaded to both client and server named rtc.config.js perhaps..
+```javascript
+module.exports.rtcConfig = {
+  RTCPeerConnectionConf: { 
+    required: {
+      video: false,
+      audio: false
+    },
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+    optional: [
+      { DtlsSrtpKeyAgreement: true },
+      { RtpDataChannels: true }] //Apparently this may make firefox compatible.
+  }
+  datachannels:
+  [{
+    label: "tcp",
+    config: {
+      ordered: true,
+      maxRetransmits: 10,
+      binaryType: "blob"
+    }
+  },{
+    label: "udp",
+    config: {
+      ordered: false,
+      maxRetransmits: 0,
+      binaryType: "blob"
+    }
+  }]
+}
+```
+
 Server side with express
 ```javascript
-const { RTCServer } = require("webrtc-server-client-datachannel");
+const { RTCServer } = require('webrtc-server-client-datachannel');
 const { createServer } = require('http');
 const { Server } = require('ws');
 const express = require('express');
 
+const rtcConfig = require('./rtc.config');
+
 const app = express();
 const server = createServer(app);
 
-/**
- * @type {RTCConfiguration}
- */
-const pcConf = { required: {
-    video: false,
-    audio: false
-  },
-  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-  optional: [{ DtlsSrtpKeyAgreement: true }]
-}; 
-
-const dataChannelTCPLike = {
-  label: "tcp",
-  config: {
-    ordered: true,
-    maxRetransmits: 10,
-    binaryType: "blob"
-  }
-};
-
-const dataChannelUDPLike = {
-  label: "udp",
-  config: {
-    ordered: false,
-    maxRetransmits: 0,
-    binaryType: "blob"
-  }
-};
 
 server.listen(8080, () => {
   const address = server.address();
@@ -53,7 +59,7 @@ server.listen(8080, () => {
 
 new Server({ server }).on('connection', async ws => {
 
-  let pc = new RTCServer(ws, pcConf, [dataChannelTCPLike, dataChannelUDPLike]);
+  let pc = new RTCServer(ws, rtcConfig.RTCPeerConnectionConf, rtcConfig.datachannels);
   await pc.create();
 
   pc.tcp.onmessage = (event) => {
@@ -69,20 +75,7 @@ Your client can then have code like this to accept and send some strings to the 
 ```javascript
 import { RTCClient } from "webrtc-server-client-datachannel";
 
-/**
- * @type {RTCConfiguration}
- */
-const pcConf = { 
-  required: {
-    video: false,
-    audio: false
-  },
-  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
-  optional: [{ DtlsSrtpKeyAgreement: true }]
-}; 
-
-const dataChannelTCPLike = {label: "tcp"};
-const dataChannelUDPLike = {label: "udp"};
+import { rtcConfig } from './rtc.config';
 
 async function main() {
   try {
@@ -90,7 +83,7 @@ async function main() {
     const ws = new WebSocket('ws://' + "localhost" + ':8080');
     await onOpen(ws);
 
-    let pc = new RTCClient(ws, pcConf,[dataChannelTCPLike, dataChannelUDPLike]);
+    let pc = new RTCClient(ws, rtcConfig.RTCPeerConnectionConf, rtcConfig.datachannels);
     await pc.create();
 
     pc.tcp.send("AllReadyFromTCP");
@@ -128,8 +121,7 @@ main();
 ```
 
 # Limitations
-The RTCPeerConnection is not available in all browsers. RTCDataChannel even less! It is not supported in firefox.  
-If you want compatability, or use this functionality outside of chromium browsers, I would suggest packing the client into electron.  
-If (browser != chrome) {"redirect to bundled electron download page"}  
+The RTCPeerConnection is not working the same way in all browsers, and alot of it is experimental technology!   
+Please reply with compatability issues if you find some.  
   
-It is also wise to add handlers for websocket close, and RTCServer.pc.onclose, RTCClient.pc.onclose.
+It is important that the RTCConfiguration is equal, so normally split it into a seperate file and import the same configuration to both client and server. This is due to making the datachannels negotiated beforehand. It seems this was needed for firefox to not destroy the objects after creation.
