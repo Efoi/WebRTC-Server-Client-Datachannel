@@ -19,7 +19,7 @@ module.exports.rtcConfig = {
     optional: [
       { DtlsSrtpKeyAgreement: true },
       { RtpDataChannels: true }] //Apparently this may make firefox compatible.
-  }
+  },
   datachannels:
   [{
     label: "tcp",
@@ -46,7 +46,7 @@ const { createServer } = require('http');
 const { Server } = require('ws');
 const express = require('express');
 
-const rtcConfig = require('./rtc.config');
+const { rtcConfig } = require('./rtc.config');
 
 const app = express();
 const server = createServer(app);
