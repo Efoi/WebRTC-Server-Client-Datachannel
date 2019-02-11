@@ -1,6 +1,6 @@
 {
   "name": "webrtc-server-client-datachannel",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A class that handles RTCDataChannels from cradle to grave",
   "main": "index.js",
   "repository": {
